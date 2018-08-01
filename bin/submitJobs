@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # cmd parsing functions
-usage() { echo "Usage: $0 -i <FARFAR input script> [-d <directory>] [-p <number of processors>]" 1>&2; exit 1; }
+usage() { echo "submit a Rosetta FARFAR job
+Usage: submitJobs -i <FARFAR input script> [-d <directory>] [-p <number of processors>]" 1>&2; exit 1; }
 invalidOpt() { echo "Invalid option: -$OPTARG" 1>&2; exit 1; }
 missingArg() { echo "Option -$OPTARG requires an argument" 1>&2; exit 1; }
       
@@ -14,7 +15,7 @@ proc=1
 # cmd parsing
 #------------
 
-while getopts ":i:d:p:" opt; do
+while getopts ":i:d:p:h" opt; do
     case $opt in
         i) 
             farfar=$OPTARG
@@ -24,6 +25,9 @@ while getopts ":i:d:p:" opt; do
             ;;
         p)
             proc=$OPTARG
+            ;;
+        h)
+            usage
             ;;
         \?)
             invalidOpt
