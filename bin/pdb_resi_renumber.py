@@ -64,7 +64,7 @@ def parseEdit(editline):
         for i,_ in enumerate(residues[on]):
             if residues[on][i][0] == '':
                 residues[on][i][0] = ' '
-
+    
     # check if length of old and new residue list is equal
     if len(residues['old']) != len(residues['new']):
         print('-> Error: old residues and new residues do not have the same length')
@@ -117,24 +117,6 @@ def check_chain_resi_exist(structure_id, model, residues):
     return
 
 
-def check_chain_number(model, residues):
-    """
-    Check if the number of chains before and after the renumbering will be the same
-    
-    Parameters:
-    ----------
-    model : class object referring to a model within the structure class
-    residues : dictionary containing list of lists with chain(s) and residue(s) to be modified
-
-    """
-    uniOld = np.unique([r[0] for r in residues['old']])
-    uniNew = np.unique([r[0] for r in residues['new']])
-    if len(uniNew) > len(uniOld):
-        print('-> Error: number of specified chains before and after renumbering does not agree')
-        sys.exit()
-    return uniOld, uniNew
-
-
 def renumber(structure_id, structure, mdl, residues):
     """
     Reassign a new chain ID
@@ -153,7 +135,6 @@ def renumber(structure_id, structure, mdl, residues):
     """
     model = structure[mdl]    
     check_chain_resi_exist(structure_id, model, residues)
-    uniOld, uniNew = check_chain_number(model, residues)
     
     
     def reassign(oC, oR, nC, nR):
