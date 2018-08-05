@@ -67,7 +67,7 @@ def parseEdit(editline):
 
     # check if length of old and new residue list is equal
     if len(residues['old']) != len(residues['new']):
-        print('old residues and new residues do not have the same length')
+        print('-> Error: old residues and new residues do not have the same length')
         sys.exit()
     else:
         return residues
@@ -93,9 +93,9 @@ def loadPDB(pdbfile):
     return structure_id, structure
 
 
-def checkChainExists(structure_id, model, residues):
+def check_chain_resi_exist(structure_id, model, residues):
     """
-    Check if the specified chain exists in the structure object
+    Check if the specified chain and residues exists in the structure object
     
     Parameters:
     ----------
@@ -104,38 +104,22 @@ def checkChainExists(structure_id, model, residues):
     residues : dictionary containing list of lists with chain(s) and residue(s) to be modified
 
     """
-    for chain in residues['old']:
-        try:
-            chain = model[chain[0]]
-        except:
-            print('chain \'{}\' is not present in structure \'{}\''.format(chain[0], structure_id))
+    for (oC, oR) in residues['old']:
+
+        if oC not in [c.id for c in model.get_chains()]:
+            print(list(model.get_chains()))
+            print('-> Error: chain \'{}\' is not present in structure \'{}\''.format(oC, structure_id))
+            sys.exit() 
+
+        if oR not in [r.id[1] for r in model[oC].get_residues()]:
+            print('-> Error: residue \'{}\' is not present in chain \'{}\' of structure \'{}\''.format(oR, oC, structure_id))
             sys.exit()
     return
 
 
-def checkResExists(structure_id, model, residues):
+def check_chain_number(model, residues):
     """
-    Check if the specified residues exists in the structure object
-    
-    Parameters:
-    ----------
-    structure_id : string with filename or PDB code (no file extension)
-    model : class object referring to a model within the structure class
-    residues : dictionary containing list of lists with chain(s) and residue(s) to be modified
-
-    """
-    for res in residues['old']:
-        try:
-            resi = model[res[0]][res[1]]
-        except:
-            print('residue \'{}\' is not present in chain \'{}\' of structure \'{}\''.format(res[1], res[0], structure_id))
-            sys.exit()
-    return
-
-
-def checkChainNumber(model, residues):
-    """
-    Check if the number of chains before and after modification will be the same
+    Check if the number of chains before and after the renumbering will be the same
     
     Parameters:
     ----------
@@ -143,17 +127,21 @@ def checkChainNumber(model, residues):
     residues : dictionary containing list of lists with chain(s) and residue(s) to be modified
 
     """
-    if len(np.unique([r[0] for r in residues['new']])) > len(np.unique([r[0] for r in residues['old']])):
-        print('cannot create two chain from a single one')
+    uniOld = np.unique([r[0] for r in residues['old']])
+    uniNew = np.unique([r[0] for r in residues['new']])
+    if len(uniNew) > len(uniOld):
+        print('-> Error: number of specified chains before and after renumbering does not agree')
         sys.exit()
-    return
+    return uniOld, uniNew
 
-def alterChain(structure, mdl, residues):
+
+def renumber(structure_id, structure, mdl, residues):
     """
     Reassign a new chain ID
     
     Parameters:
     ----------
+    structure_id : string with filename or PDB code (no file extension)        
     structure : class object that follows the Structure/Model/Chain/Residue/Atom (SMCRA) architecture
     mdl : integer specifying a model within the structure class
     residues : dictionary containing list of lists with chain(s) and residue(s) to be modified
@@ -163,38 +151,61 @@ def alterChain(structure, mdl, residues):
     structure : chain modified class object
 
     """
-    uniqueOld = np.unique([r[0] for r in residues['old']])
-    uniqueNew = np.unique([r[0] for r in residues['new']])
-    for oC, nC in zip(uniqueOld, uniqueNew):
-        if nC != oC:
-            structure[mdl][oC].id = nC
-            print('Note: you have specified a new chain: \'{}\'. All residues belonging to former chain \'{}\' have been reassigned to chain \'{}\'.'.format(nC, oC, nC))
-    return structure
-
-def alterResi(structure_id, structure, mdl, residues):
-    """
-    Renumber specific residues
-        
-    Parameters:
-    ----------
-    structure_id : string with filename or PDB code (no file extension)    
-    structure : class object that follows the Structure/Model/Chain/Residue/Atom (SMCRA) architecture
-    mdl : integer specifying a model within the structure class
-    residues : dictionary containing list of lists with chain(s) and residue(s) to be modified
-
-    Returns:
-    -------
-    structure : residue modified class object
+    model = structure[mdl]    
+    check_chain_resi_exist(structure_id, model, residues)
+    uniOld, uniNew = check_chain_number(model, residues)
     
-    """
-    checkChainExists(structure_id, structure[mdl], residues)
-    checkChainNumber(structure[mdl], residues)
-    checkResExists(structure_id, structure[mdl], residues)
-    # renumber residues
-    for oRC, nRC in zip(residues['old'], residues['new']):
-        res = structure[mdl][oRC[0]][oRC[1]]
-        res.id = (res.id[0], nRC[1], res.id[2])
-        print('residue \'{}\' has been assigned to \'{}\'.'.format(oRC[1], nRC[1]))
+    
+    def reassign(oC, oR, nC, nR):
+    
+        if oC == nC:
+            model[oC][oR].id = (' ', nR, ' ')
+        else:   
+            # check if new chain is already present in model         
+            chainIDs = [c.id for c in model.get_chains()]  # chainIDs will be updated on every iteration        
+            if nC not in chainIDs:
+                if nC is not '?':
+                    print('-> Note: chain \'{}\' is not present in \'{}\'. Adding it to the structure'.format(nC, structure_id))
+                model.add(bp.Chain.Chain(nC))
+        
+            # add residue to new chain
+            model[nC].add(bp.Residue.Residue((' ', nR, ' '), model[oC][oR].resname, model[oC][oR].segid))
+            
+            # copy all atoms from old residue in the old chain over to the new residue in the new chain
+            atomIDs = [a.id for a in model[oC][oR].get_atoms()]
+            for a in atomIDs:  
+                model[nC][nR].add(model[oC][oR][a])
+        
+            # finally remove the residue from the old chain
+            model[oC].detach_child((' ', oR, ' '))
+        return model
+
+        
+    # Note: assignment proceeds in two steps: if one residue is assigned to a new residue that is already present in the structure, the old residue is insted assigned to a temporary dummy chain, to give the other residue a chance to be reassigned as well (e.g. 1-2>2-3; 1 will be assigned to 2 but 2 is still present at the time of assignment, thus 1 is assigned to ?:2 instead. When 2 is then assigned to 3, ?:2 can be assigned to its finally value: 2. 
+    isPres = []
+    for i, ((oC_ori,oR_ori), (nC_ori,nR_ori)) in enumerate(zip(residues['old'], residues['new'])):
+        # check if new chain and new resi are part of the current structure
+        if (nC_ori, nR_ori) in [(c.id, r.id[1]) for c in model.get_chains() for r in c.get_residues()]:
+            isPres.append(True)
+            # assign to dummy chain
+            reassign(oC_ori, oR_ori, '?', nR_ori)
+        else:
+            isPres.append(False)
+            # assign to new chain and new resi
+            reassign(oC_ori, oR_ori, nC_ori, nR_ori)
+            print('-> residue \'{}:{}\' has been assigned to \'{}:{}\'.'.format(oC_ori, oR_ori, nC_ori, nR_ori))
+
+
+    for i, ((oC_ori,oR_ori), (nC_ori,nR_ori)) in enumerate(zip(residues['old'], residues['new'])):
+        if isPres[i]:
+            # try to assign dummy chain to new chain
+            try:
+                reassign('?', nR_ori, nC_ori, nR_ori)
+                print('-> residue \'{}:{}\' has been assigned to \'{}:{}\'.'.format(oC_ori, oR_ori, nC_ori, nR_ori))            
+            except:
+                print('-> Error: residue \'{}:{}\' could not be assigned to \'{}:{}\' since that residue already exists. No output is generated'.format(oC_ori, oR_ori, nC_ori, nR_ori))
+                sys.exit()
+        
     return structure
 
 
@@ -216,7 +227,7 @@ def writePDB(structure_id, structure, inplace):
     else:
         renumber = '_renum'
     io.save('{}{}.pdb'.format(structure_id, renumber))
-    print('Successfully renumbered (ID: {}) and written to directory (\'{}{}.pdb\').'.format(structure_id, structure_id, renumber))
+    print('=> Successfully renumbered (ID: {}) and written to directory (\'{}{}.pdb\').'.format(structure_id, structure_id, renumber))
     return
 
 if __name__ == "__main__":
@@ -224,6 +235,5 @@ if __name__ == "__main__":
     pdbfile, editline, inplace = parseCmd(version)
     residues = parseEdit(editline)
     structure_id, structure = loadPDB(pdbfile)
-    structure_renum = alterResi(structure_id, structure, 0, residues)
-    structure_Chainrenum = alterChain(structure_renum, 0, residues)
-    writePDB(structure_id, structure_Chainrenum, inplace)
+    structure_renum = renumber(structure_id, structure, 0, residues)    
+    writePDB(structure_id, structure_renum, inplace)
