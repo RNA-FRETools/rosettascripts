@@ -77,7 +77,7 @@ done
 
 # submit jobs
 for i in `seq 1 $proc`; do
-    ./submit/job"$i" &
+    ./submit/job_"$dir"_"$i" &
     echo "job $i started..."
     sleep 1.5
 done
