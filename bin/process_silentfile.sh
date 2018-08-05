@@ -5,7 +5,8 @@
 # cmd parsing functions
 usage() { echo "Remove non standard residues from silentfile 
 Usage: process_silentfile -s <silentfile>" 1>&2; exit 1; }
-
+invalidOpt() { echo "Invalid option: -$OPTARG" 1>&2; exit 1; }
+missingArg() { echo "Option -$OPTARG requires an argument" 1>&2; exit 1; }
 
 #------------
 # cmd parsing
@@ -41,4 +42,4 @@ fi
 silentfile_proc=${silentfile%%.out}_proc.out
 #cp $silentfile $silentfile_proc
 cat $silentfile | awk -F '\NON_STANDARD_RESIDUE_MAP' '{ print $1 }' > $silentfile_proc
-echo '-> $silentfile successfully processed!'
+echo $silentfile successfully processed and written to $silentfile_proc
