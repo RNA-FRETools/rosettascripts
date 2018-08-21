@@ -29,8 +29,9 @@ def parseCmd(version):
     parser.add_argument('-pdb', help='pdb input file (.pdb)', required=True)
     parser.add_argument('-i', help='in-place modification', action='store_true') # no argument required
     parser.add_argument('-e', '--edit', help='\'oldResi>newResi\' (use "," to separate individual residues and "-" for residue ranges; e.g. \'2-4,5>A:6-8,9\')', required=True)
+    parser.add_argument('-o', help='pdb output filename', required=False)    
     args = parser.parse_args()
-    return args.pdb, args.edit, args.i
+    return args.pdb, args.edit, args.i, args.o
 
 
 def parseEdit(editline):
@@ -190,7 +191,7 @@ def renumber(structure_id, structure, mdl, residues):
     return structure
 
 
-def writePDB(structure_id, structure, inplace):
+def writePDB(structure_id, structure, inplace, outputfile):
     """
     Write PDB file to directory
             
@@ -205,6 +206,9 @@ def writePDB(structure_id, structure, inplace):
     io.set_structure(structure)
     if inplace:
         renumber = ''
+    elif outputfile is not None:
+        structure_id = outputfile.replace('.pdb', '')
+        renumber = ''
     else:
         renumber = '_renum'
     io.save('{}{}.pdb'.format(structure_id, renumber))
@@ -213,8 +217,8 @@ def writePDB(structure_id, structure, inplace):
 
 if __name__ == "__main__":
     version = 1.0
-    pdbfile, editline, inplace = parseCmd(version)
+    pdbfile, editline, inplace, outputfile = parseCmd(version)
     residues = parseEdit(editline)
     structure_id, structure = loadPDB(pdbfile)
     structure_renum = renumber(structure_id, structure, 0, residues)    
-    writePDB(structure_id, structure_renum, inplace)
+    writePDB(structure_id, structure_renum, inplace, outputfile)

@@ -71,7 +71,7 @@ for i in `seq 1 $proc`; do
     if [ ! -d "submit" ]; then
         mkdir ./submit
     fi
-    echo "$file" > ./submit/job"$i"
+    echo "$file" > ./submit/job_"$dir"_"$i"
     echo "-run:use_time_as_seed" >> ./submit/job"$i"
 done
 

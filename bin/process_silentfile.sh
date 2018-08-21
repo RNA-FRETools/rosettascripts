@@ -38,8 +38,12 @@ if [ -z "$silentfile" ]; then
     usage
 fi
 
+# check if file is present
+if [ ! -e "$silentfile" ]; then
+    echo Error: the specified file does not exist
+    exit 1
+fi
+
 # remove NON_STANDARD_RESIDUE tag line from silentfile (make a copy first)
 silentfile_proc=${silentfile%%.out}_proc.out
-#cp $silentfile $silentfile_proc
-cat $silentfile | awk -F '\NON_STANDARD_RESIDUE_MAP' '{ print $1 }' > $silentfile_proc
-echo $silentfile successfully processed and written to $silentfile_proc
+cat $silentfile | awk -F '\NON_STANDARD_RESIDUE_MAP' '{ print $1 }' > $silentfile_proc && echo $silentfile successfully processed and written to $silentfile_proc
