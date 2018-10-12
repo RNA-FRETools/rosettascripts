@@ -71,14 +71,14 @@ for i in `seq 1 $proc`; do
     if [ ! -d "submit" ]; then
         mkdir ./submit
     fi
-    echo "$file" > ./submit/job_"$dir"_"$i".sh
+    echo "$file" > ./submit/job_"$i".sh
     echo "-run:use_time_as_seed" >> ./submit/job"$i".sh
     chmod +x ./submit/job"$i".sh
 done
 
 # submit jobs
 for i in `seq 1 $proc`; do
-    ./submit/job_"$dir"_"$i".sh &
+    ./submit/job_"$i".sh &
     echo "job $i started..."
     sleep 1.5
 done
