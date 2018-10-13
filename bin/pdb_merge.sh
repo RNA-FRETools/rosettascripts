@@ -50,7 +50,7 @@ if [ ! -e "$silentfile" ]; then
     exit 1
 fi
 
-# check if
+# check if the number of structures is an integer
 if [ $nof_struct -eq $nof_struct 2>/dev/null ]; then
     echo Extracting $nof_struct structures from silentfile "$silentfile"...
 else
@@ -58,13 +58,31 @@ else
     exit 1
 fi
 
+# check that score file exists
+if [ ! -e "${silentfile%%_proc.out*}".sc ]; then
+    echo Error: the score file "${silentfile%%_proc.out*}".sc is missing    exit 1
+fi
+
 # extract decoys
 mkdir pdb_temp || exit 1
 cd pdb_temp
-extract_lowscore_decoys.py "$silentfile" "$nof_struct"
+extract_lowscore_decoys.py "../$silentfile" "$nof_struct"
 cd ..
 
 # lowest score decoy list
-files=`ls pdb_temp/"$silentfile".*.pdb | awk '{ print $1 }'`
-scores=`cat "${silentfile%%_proc.out*}".sc | sort -k2 -n | head -$((nof_struct+1)) | tail -$nof_struct | awk '{ print $2, $19 }'`
-paste <(echo "$files") <(echo "$scores") --delimiters ' ' > pdb_temp/lowScoreDecoys.dat
+pdbfiles=`ls pdb_temp/"$silentfile".*.pdb | awk -F"/" '{ print $2 }' | sort -t \. -k 3 -g`
+scores=`cat "${silentfile%%_proc.out*}".sc | sort -k2 -n | head -$((nof_struct+1)) | tail -$nof_struct | awk '{ print $2,"\t", $19 }'`
+paste <(echo "$pdbfiles") <(echo "$scores") --delimiters '\t' > "${silentfile%%_proc.out*}"_score.dat
+
+echo ROSETTA Lowest decoy models > "${silentfile%%_proc.out*}"_merged.pdb
+for pdb in $pdbfiles; do
+    nof_mdl=`echo $pdb | sed 's/[^0-9]/ /g' | awk '{print $NF}'`
+    echo "MODEL        $nof_mdl" >> "${silentfile%%_proc.out*}"_merged.pdb
+    grep ATOM pdb_temp/$pdb >> "${silentfile%%_proc.out*}"_merged.pdb
+    echo "ENDMDL" >> "${silentfile%%_proc.out*}"_merged.pdb
+done
+
+echo Wrote $nof_struct structures to "${silentfile%%_proc.out*}"_merged.pdb
+
+# clean up
+rm -r pdb_temp
