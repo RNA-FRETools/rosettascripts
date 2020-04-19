@@ -60,7 +60,8 @@ fi
 
 # check that score file exists
 if [ ! -e "${silentfile%%_proc.out*}".sc ]; then
-    echo Error: the score file "${silentfile%%_proc.out*}".sc is missing    exit 1
+    echo Error: the score file "${silentfile%%_proc.out*}".sc is missing    
+    exit 1
 fi
 
 # extract decoys
