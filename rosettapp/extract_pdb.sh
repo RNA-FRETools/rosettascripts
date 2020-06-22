@@ -45,6 +45,7 @@ if [ -z "$silentfile" ] && [ -z "$silentfolder" ]; then
     usage
 fi
 
+
 # check if file is present
 if [ ! -z "$silentfile" ] && [ ! -e "$silentfile" ]; then
     echo Error: the specified file does not exist
@@ -60,8 +61,16 @@ if [ -z "$silentfile" ]; then
         easy_cat.py $silentfolder | tee tmp
         silentfile=`sed -n 's/Catting into:  \(.*\)\.\.\..*/\1/p' tmp`
         rm tmp
+        # check if file is present
+        if [ ! -e "$silentfile" ]; then
+            echo No models ready to extract.
+            exit 1
+        fi
     fi
 fi
+
+
+
 
 # no cmd line arguments given
 if [ -z "$number" ]; then
