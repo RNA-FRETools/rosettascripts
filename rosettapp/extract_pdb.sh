@@ -70,20 +70,17 @@ if [ -z "$silentfile" ]; then
 fi
 
 
-
-
 # no cmd line arguments given
 if [ -z "$number" ]; then
     number=1
 fi
 
-echo "$number" lowest energy models: 
 grep "^SCORE:" "$silentfile" | grep -v description | sort -nk2 | head -n "$number" | awk '{print $NF ": " $2}' | tee tmp_models
 echo ""
 
 # check if file is present
 if [ "$extract" != "false" ]; then
-    extract_pdbs.linuxgccrelease -in:file:silent "$silentfile" -tags `cat tmp_models | cut -f1 -d':'` && echo "$number model(s) successfully extracted!" && rm tmp_models
+    extract_pdbs.linuxgccrelease -in:file:silent "$silentfile" -tags `cat tmp_models | cut -f1 -d':'` && echo "$(wc -l <tmp_models) model(s) successfully extracted!" && rm tmp_models
 else
     rm tmp_models
 fi
