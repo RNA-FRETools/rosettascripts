@@ -146,7 +146,7 @@ def renumber(structure_id, structure, mdl, residues):
             # check if new chain is already present in model         
             chainIDs = [c.id for c in model.get_chains()]  # chainIDs will be updated on every iteration        
             if nC not in chainIDs:
-                if nC is not '?':
+                if nC != '?':
                     print('-> Note: chain \'{}\' is not present in \'{}\'. Adding it to the structure'.format(nC, structure_id))
                 model.add(bp.Chain.Chain(nC))
         
