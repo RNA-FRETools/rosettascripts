@@ -96,8 +96,7 @@ if [ "$merge" = "true" ]; then
     for pdb in `cat tmp_models | cut -f1 -d':'`; do
         echo MODEL $i >> "$pdb_merge" 
         cat "$pdb".pdb >> "$pdb_merge"
-        echo ENDMDL >> "$pdb_merge"
-        echo;echo >> "$pdb_merge"
+        echo -e "ENDMDL\n\n" >> "$pdb_merge"
         rm "$pdb".pdb
         i=$(($i+1))
     done
