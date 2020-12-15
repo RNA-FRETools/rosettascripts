@@ -2,7 +2,7 @@
 
 # cmd parsing functions
 usage() { echo "Extract n pdbs with the lowest energy score from silentfile 
-Usage: extract_pdb.sh -s <silentfile> -f <folder with silentfiles> -n <number of models> -e <extract pdbs (true|false, default: true)> -m <merge pdbs (true|false, defauöt: false)>"1>&2; exit 1; }
+Usage: extract_pdb.sh -s <silentfile> -f <folder with silentfiles> -n <number of models> -e <extract pdbs (true|false, default: true)> -m <merge pdbs (true|false, default: false)>" 1>&2; exit 1; }
 invalidOpt() { echo "Invalid option: -$OPTARG" 1>&2; exit 1; }
 missingArg() { echo "Option -$OPTARG requires an argument" 1>&2; exit 1; }
 
@@ -94,7 +94,8 @@ if [ "$merge" = "true" ]; then
     pdb_merge=`echo ${silentfile%.*}.pdb`
     > $pdb_merge
     for pdb in `cat tmp_models | cut -f1 -d':'`; do
-        echo MODEL $i >> "$pdb_merge" 
+        echo MODEL $i >> "$pdb_merge"
+        echo TITLE "$pdb" >> "$pdb_merge"
         cat "$pdb".pdb >> "$pdb_merge"
         echo -e "ENDMDL\n\n" >> "$pdb_merge"
         rm "$pdb".pdb
