@@ -2,7 +2,7 @@
 
 # cmd parsing functions
 usage() { echo "Extract n pdbs with the lowest energy score from silentfile 
-Usage: extract_pdb -s <silentfile> -fd <folder with silentfiles> -n <number of models (default: 1)> -e <extract pdbs (true|false, default: true)> -m <merge pdbs (true|false, default: false)>" 1>&2; exit 1; }
+Usage: extract_pdb -s <silentfile> -d <folder with silentfiles> -n <number of models (default: 1)> -e <extract pdbs (true|false, default: true)> -m <merge pdbs (true|false, default: false)>" 1>&2; exit 1; }
 invalidOpt() { echo "Invalid option: -$OPTARG" 1>&2; exit 1; }
 missingArg() { echo "Option -$OPTARG requires an argument" 1>&2; exit 1; }
 

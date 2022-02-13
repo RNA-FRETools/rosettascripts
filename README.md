@@ -48,4 +48,4 @@ Currently rosettascripts contains the following Python and Unix utilities:
   </details>
 
 ## Tutorial on riboswitch de novo modeling
-  We outline the steps involved in setting up a *de novo* modeling pipeline using Rosetta's FARFAR2 protocol (Watkins et al., *Structure* 2020). [Here](tutorial/Mn_riboswitch.md), We demonstrate the workflow by modeling a manganese riboswitch.
+  We outline the steps involved in setting up a *de novo* modeling pipeline using Rosetta's FARFAR2 protocol (Watkins et al., *Structure* 2020). [Here](tutorial/Mn_riboswitch.md), we demonstrate the workflow by modeling a manganese riboswitch.

@@ -3,21 +3,31 @@
 import subprocess
 import pathlib
 import argparse
+import platform
 
 from rosettascripts import metadata
 from rosettascripts import MODULE_DIR
 
 
 def extract_pdb():
-    subprocess.run(["bash", str(MODULE_DIR.joinpath("scripts", "extract_pdb.sh"))])
+    if platform.system() != "Windows":
+        subprocess.call(str(MODULE_DIR.joinpath("scripts", "extract_pdb.sh")))
+    else:
+        print("extract_pdb is only available for Unix operating systems")
 
 
 def submitJobs():
-    subprocess.run(["bash", str(MODULE_DIR.joinpath("scripts", "submitJobs.sh"))])
+    if platform.system() != "Windows":
+        subprocess.call(str(MODULE_DIR.joinpath("scripts", "submitJobs.sh")))
+    else:
+        print("submitJobs is only available for Unix operating systems")
 
 
 def process_silentfile():
-    subprocess.run(["bash", str(MODULE_DIR.joinpath("scripts", "process_silentfile.sh"))])
+    if platform.system() != "Windows":
+        subprocess.call(str(MODULE_DIR.joinpath("scripts", "process_silentfile.sh")))
+    else:
+        print("process_silentfile is only available for Unix operating systems")
 
 
 def rosettascripts():
