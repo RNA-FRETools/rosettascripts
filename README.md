@@ -9,15 +9,15 @@ Currently it contains the following Python and Unix utilities:
   <summary>Usage</summary>
   
   ```
-  submitJobs.sh -i <FARFAR input script> [-d <directory>] [-p <number of processors>]
+  submitJobs -i <FARFAR input script> [-d <directory>] [-p <number of processors>]
   ```
   </details>
-- **extract_pdb.sh**: extract decoys from a Rosetta silentfile and optionally concatenate them into a single multi-model PDB file
+- **extract_pdb**: extract decoys from a Rosetta silentfile and optionally concatenate them into a single multi-model PDB file
   <details>
   <summary>Usage</summary>
   
   ```
-  extract_pdb.sh -s <silentfile> -f <folder with silentfiles> -n <number of models> -e <extract pdbs (true|false, default: true)> -m <merge pdbs (true|false, default: false)>
+  extract_pdb -s <silentfile> -f <folder with silentfiles> -n <number of models> -e <extract pdbs (true|false, default: true)> -m <merge pdbs (true|false, default: false)>
   ```
   </details>
 - **pdb_resi_renumber.py**: renumber the residues of a PDB file
