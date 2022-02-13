@@ -1,7 +1,7 @@
 # <img src="images/Rosettascripts_banner.png">
 
-Rosetta-scripts comprises a set of helper scripts for homology and *de novo* modeling with Rosetta.
-Currently it contains the following Python and Unix utilities:
+Rosetta-scripts comprises a set of helper scripts for homology and *de novo* modeling with Rosetta. A tutorial to get started with Rosetta and rosettascripts is available [here]()
+Currently rosettascripts contains the following Python and Unix utilities:
 
 
 - **submitJobs**: running multiple Rosetta jobs in parallel using a `rna_denovo` master file
@@ -46,3 +46,6 @@ Currently it contains the following Python and Unix utilities:
   process_silentfile -s <silentfile>
   ```
   </details>
+
+## Tutorial on riboswitch de novo modeling
+  We outline the steps involved in setting up a *de novo* modeling pipeline using Rosetta's FARFAR2 protocol (Watkins et al., *Structure* 2020). [Here](tutorial/Mn_riboswitch.md), We demonstrate the workflow by modeling a manganese riboswitch.

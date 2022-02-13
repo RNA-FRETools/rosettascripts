@@ -9,15 +9,15 @@ from rosettascripts import MODULE_DIR
 
 
 def extract_pdb():
-    subprocess.run(str(MODULE_DIR.joinpath("scripts", "extract_pdb.sh")))
+    subprocess.run(["bash", str(MODULE_DIR.joinpath("scripts", "extract_pdb.sh"))])
 
 
 def submitJobs():
-    subprocess.run(str(MODULE_DIR.joinpath("scripts", "submitJobs.sh")))
+    subprocess.run(["bash", str(MODULE_DIR.joinpath("scripts", "submitJobs.sh"))])
 
 
 def process_silentfile():
-    subprocess.run(str(MODULE_DIR.joinpath("scripts", "process_silentfile.sh")))
+    subprocess.run(["bash", str(MODULE_DIR.joinpath("scripts", "process_silentfile.sh"))])
 
 
 def rosettascripts():
