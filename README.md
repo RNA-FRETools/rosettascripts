@@ -1,7 +1,7 @@
-# <img src="images/Rosettascripts_logo.png" width="200">
+# <img src="images/Rosettascripts_banner.png">
 
 Rosetta-scripts comprises a set of helper scripts for homology and *de novo* modeling with Rosetta.
-Currently is contains the following Python and Unix utilities:
+Currently it contains the following Python and Unix utilities:
 
 
 - **submitJobs**: running multiple Rosetta jobs in parallel using a `rna_denovo` master file
@@ -9,7 +9,7 @@ Currently is contains the following Python and Unix utilities:
   <summary>Usage</summary>
   
   ```
-  submitJobs -i <FARFAR input script> [-d <directory>] [-p <number of processors>]
+  submitJobs.sh -i <FARFAR input script> [-d <directory>] [-p <number of processors>]
   ```
   </details>
 - **extract_pdb.sh**: extract decoys from a Rosetta silentfile and optionally concatenate them into a single multi-model PDB file
