@@ -11,7 +11,29 @@ from rosettascripts import MODULE_DIR
 
 def extract_pdb():
     if platform.system() != "Windows":
-        subprocess.call(str(MODULE_DIR.joinpath("scripts", "extract_pdb.sh")))
+        parser = argparse.ArgumentParser(description="Extract PDB(s) with the lowest energy score from silentfile(s)")
+        parser.add_argument("-s", "--silentfile", type=str, default="", help="Rosetta output file")
+        parser.add_argument("-d", "--directory", type=str, default="", help="directory with silentfiles")
+        parser.add_argument("-n", "--number", type=int, default=1, help="number of models")
+        parser.add_argument("-e", "--extract", type=str, default="true", help="extract PDBs")
+        parser.add_argument("-m", "--merge", type=str, default="true", help="merge PDBs")
+        parser = argparse.ArgumentParser()
+        args = parser.parse_args()
+        subprocess.call(
+            [
+                str(MODULE_DIR.joinpath("scripts", "extract_pdb.sh")),
+                "-s",
+                args.silentfile,
+                "-d",
+                args.directory,
+                "-n",
+                args.number,
+                "-e",
+                args.extract,
+                "-m",
+                args.merge,
+            ]
+        )
     else:
         print("extract_pdb is only available for Unix operating systems")
 
