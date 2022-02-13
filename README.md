@@ -20,12 +20,12 @@ Currently it contains the following Python and Unix utilities:
   extract_pdb -s <silentfile> -f <folder with silentfiles> -n <number of models> -e <extract pdbs (true|false, default: true)> -m <merge pdbs (true|false, default: false)>
   ```
   </details>
-- **pdb_resi_renumber.py**: renumber the residues of a PDB file
+- **pdb_resi_renumber**: renumber the residues of a PDB file
   <details>
   <summary>Usage</summary>
   
   ```
-  pdb_resi_renumber.py [-h] [--version] -pdb PDB [-i] -e EDIT [-o O]
+  pdb_resi_renumber [-h] [--version] -pdb PDB [-i] -e EDIT [-o O]
 
   renumber residues in PDB files
 
@@ -38,7 +38,7 @@ Currently it contains the following Python and Unix utilities:
     -o O                  pdb output filename
   ```
   </details>
-- **process_silentfile.sh**: remove non-standard residues from a silentfile
+- **process_silentfile**: remove non-standard residues from a silentfile
   <details>
   <summary>Usage</summary>
   

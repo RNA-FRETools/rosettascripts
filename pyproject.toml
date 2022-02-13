@@ -37,6 +37,7 @@ rosettascripts = "rosettascripts.console:rosettascripts"
 extract_pdb = "rosettascripts.console:extract_pdb"
 submitJobs = "rosettascripts.console:submitJobs"
 process_silentfile = "rosettascripts.console:process_silentfile"
+pdb_resi_renumber = "rosettascripts.pdb_resi_renumber:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
