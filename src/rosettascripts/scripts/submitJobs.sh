@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # cmd parsing functions
-usage() { echo "submit a Rosetta FARFAR job
+usage() { echo "Submit a Rosetta FARFAR job on multiple cores
 Usage: submitJobs -i <FARFAR input script> [-d <directory>] [-p <number of processors>]" 1>&2; exit 1; }
 invalidOpt() { echo "Invalid option: -$OPTARG" 1>&2; exit 1; }
 missingArg() { echo "Option -$OPTARG requires an argument" 1>&2; exit 1; }

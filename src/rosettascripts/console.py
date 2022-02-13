@@ -16,7 +16,7 @@ def extract_pdb():
         parser.add_argument("-d", "--directory", default="", help="directory with silentfiles")
         parser.add_argument("-n", "--number", default="1", help="number of models")
         parser.add_argument("-e", "--extract", default="true", help="extract PDBs")
-        parser.add_argument("-m", "--merge", default="true", help="merge PDBs")
+        parser.add_argument("-m", "--merge", default="false", help="merge PDBs")
         args = parser.parse_args()
         subprocess.run(
             [
@@ -39,14 +39,32 @@ def extract_pdb():
 
 def submitJobs():
     if platform.system() != "Windows":
-        subprocess.call(str(MODULE_DIR.joinpath("scripts", "submitJobs.sh")))
+        parser = argparse.ArgumentParser(description="Submit a Rosetta FARFAR job on multiple cores")
+        parser.add_argument("-i", "--input", default="", help="FARFAR input script")
+        parser.add_argument("-d", "--directory", default="", help="directory for silentfiles")
+        parser.add_argument("-p", "--processes", default="1", help="number of processes (cores) to run in parallel")
+        args = parser.parse_args()
+        subprocess.run(
+            [
+                str(MODULE_DIR.joinpath("scripts", "submitJobs.sh")),
+                "-i",
+                args.input,
+                "-d",
+                args.directory,
+                "-p",
+                args.processes,
+            ]
+        )
     else:
         print("submitJobs is only available for Unix operating systems")
 
 
 def process_silentfile():
     if platform.system() != "Windows":
-        subprocess.call(str(MODULE_DIR.joinpath("scripts", "process_silentfile.sh")))
+        parser = argparse.ArgumentParser(description="Submit a Rosetta FARFAR job on multiple cores")
+        parser.add_argument("-s", "--silentfile", default="", help="Rosetta output file")
+        args = parser.parse_args()
+        subprocess.run([str(MODULE_DIR.joinpath("scripts", "process_silentfile.sh")), "-s", args.silentfile])
     else:
         print("process_silentfile is only available for Unix operating systems")
 
