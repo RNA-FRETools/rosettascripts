@@ -12,14 +12,13 @@ from rosettascripts import MODULE_DIR
 def extract_pdb():
     if platform.system() != "Windows":
         parser = argparse.ArgumentParser(description="Extract PDB(s) with the lowest energy score from silentfile(s)")
-        parser.add_argument("-s", "--silentfile", type=str, default="", help="Rosetta output file")
-        parser.add_argument("-d", "--directory", type=str, default="", help="directory with silentfiles")
-        parser.add_argument("-n", "--number", type=int, default=1, help="number of models")
-        parser.add_argument("-e", "--extract", type=str, default="true", help="extract PDBs")
-        parser.add_argument("-m", "--merge", type=str, default="true", help="merge PDBs")
-        parser = argparse.ArgumentParser()
+        parser.add_argument("-s", "--silentfile", default="", help="Rosetta output file")
+        parser.add_argument("-d", "--directory", default="", help="directory with silentfiles")
+        parser.add_argument("-n", "--number", default="1", help="number of models")
+        parser.add_argument("-e", "--extract", default="true", help="extract PDBs")
+        parser.add_argument("-m", "--merge", default="true", help="merge PDBs")
         args = parser.parse_args()
-        subprocess.call(
+        subprocess.run(
             [
                 str(MODULE_DIR.joinpath("scripts", "extract_pdb.sh")),
                 "-s",
