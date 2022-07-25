@@ -49,7 +49,8 @@ Then, start the simulations on as many cores as you like (here: 12) and write th
 submitJobs -i FARFAR2.txt -d denovo -p 12
 ```
 
-At any time during the modeling you can check the number of generated models by running `extract_pdb` in dry mode (`-e` false = don't extract PDB):
+## Postprocessing
+At any time during the modeling you can check the number of generated models by running `extract_pdb` in dry mode (`-e false` prevents extraction of any PDB file):
 
 ```
 extract_pdb -d denovo -e false
@@ -59,5 +60,4 @@ You can extract the top scoring PDB models (here: n=10) from the Rosetta generat
 
 ```
 extract_pdb -d denovo -n 10 -m true
-
 ```
