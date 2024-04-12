@@ -1,5 +1,7 @@
 # <img src="images/Rosettascripts_banner.png">
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10963214.svg)](https://doi.org/10.5281/zenodo.10963214)
+
 Rosetta-scripts comprises a set of helper scripts for homology and *de novo* modeling with Rosetta. A tutorial to get started with Rosetta and rosettascripts is available [here]()
 Currently rosettascripts contains the following Python and Unix utilities:
 
